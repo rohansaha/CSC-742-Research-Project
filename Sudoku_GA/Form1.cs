@@ -72,8 +72,8 @@ namespace Sudoku
 					{
 						Console.WriteLine(g.ToString());
 						_gene = g;
-						statusBar1.Text = String.Format("Current Fitness = {0}", g.CurrentFitness.ToString("0.00"));
-						this.Text = String.Format("Sudoko Grid - Generation {0}", i);
+                        CheckForIllegalCrossThreadCalls = false; statusBar1.Text = String.Format("Current Fitness = {0}", g.CurrentFitness.ToString("0.00"));
+                        this.Text = String.Format("Sudoko Grid - Generation {0}", i);
 						Invalidate();
 						_previousFitness = ToPercent(g.CurrentFitness);
 					}
