@@ -65,7 +65,7 @@ namespace Sudoku
 
 		public override bool CanDie(float fitness)
 		{
-			if (CurrentFitness <= (int)(fitness * 100.0f))
+			if (CurrentFitness <= fitness )
 			{
 				return true;
 			}
@@ -76,7 +76,7 @@ namespace Sudoku
 
 		public override bool CanReproduce(float fitness)
 		{
-			if (SudokuGenome.TheSeed.Next(100) >= (int)(fitness * 100.0f))
+			if (CurrentFitness>= fitness)
 			{
 				return true;
 			}
@@ -120,15 +120,6 @@ namespace Sudoku
 					TheArray[MutationIndex2, MutationIndex3] = temp;
 				}
 			}
-
-			/*
-			int MutationIndex1 = TheSeed.Next((int)9);
-			int MutationIndex2 = TheSeed.Next((int)9);
-			int MutationIndex3 = TheSeed.Next((int)9);
-			int temp = TheArray[MutationIndex1, MutationIndex3];
-			TheArray[MutationIndex1, MutationIndex3] = TheArray[MutationIndex2, MutationIndex3]; // switch them
-			TheArray[MutationIndex2, MutationIndex3] = temp; // switch them
-			*/
 
 		}
 
@@ -223,8 +214,6 @@ namespace Sudoku
 
 			}
 
-			// The fitness of the entire Sudoku Grid is the product
-			// of the column fitness, row fitness and 3x3 square fitness
 			CurrentFitness = fitnessColumns * fitnessRows * fitnessSquares;
 
 			return CurrentFitness;
@@ -234,11 +223,6 @@ namespace Sudoku
 		public override float CalculateFitness()
 		{
 			CalculateSudokuFitness();
-//			CurrentFitness = CalculateClosestRatioToNaturalLog();
-//			CurrentFitness = CalculateClosestRatioToPi();
-//			CurrentFitness = CalculateNumbersProducingProductsWithSameDigitsAsFirst();
-//			CurrentFitness = CalculateClosestProductSum();
-//			CurrentFitness =  CalculateClosestSumTo10();
 			return CurrentFitness;
 		}
 
@@ -254,7 +238,7 @@ namespace Sudoku
 				strResult += "\r\n";
 			}
 
-			strResult += "-->" + CurrentFitness.ToString();
+			strResult += "Current Fitness -->" + CurrentFitness.ToString();
 
 			return strResult;
 		}
@@ -286,18 +270,14 @@ namespace Sudoku
 					CrossoverPoint = TheSeed.Next(8) + 1;
 					for (int k = 0; k < CrossoverPoint; k++)
 					{
-						aGene1.TheArray[k,j] = CrossingGene.TheArray[k, j];
-						//						aGene1.TheArray[8 - k,j] = TheArray[8-k, j];
-						aGene2.TheArray[k ,j] = TheArray[k, j];
-						//						aGene2.TheArray[8 - k ,j] = CrossingGene.TheArray[8 - k,j];
+						aGene1.TheArray[k,j] = CrossingGene.TheArray[k, j]; //mom
+						aGene2.TheArray[k ,j] = TheArray[k, j]; //dad
 					}
 
 					for (int k = CrossoverPoint; k < 9; k++)
 					{
 						aGene2.TheArray[k,j] = CrossingGene.TheArray[k, j];
-						//						aGene1.TheArray[8 - k,j] = TheArray[8-k, j];
 						aGene1.TheArray[k ,j] = TheArray[k, j];
-						//						aGene2.TheArray[8 - k ,j] = CrossingGene.TheArray[8 - k,j];
 					}
 				}
 			}
@@ -309,59 +289,17 @@ namespace Sudoku
 					for (int k = 0; k < CrossoverPoint; k++)
 					{
 						aGene1.TheArray[j,k] = CrossingGene.TheArray[j, k];
-						//						aGene1.TheArray[8 - k,j] = TheArray[8-k, j];
 						aGene2.TheArray[j ,k] = TheArray[j, k];
-						//						aGene2.TheArray[8 - k ,j] = CrossingGene.TheArray[8 - k,j];
 					}
 
 					for (int k = CrossoverPoint; k < 9; k++)
 					{
 						aGene2.TheArray[j,k] = CrossingGene.TheArray[j, k];
-						//						aGene1.TheArray[8 - k,j] = TheArray[8-k, j];
 						aGene1.TheArray[j ,k] = TheArray[j, k];
-						//						aGene2.TheArray[8 - k ,j] = CrossingGene.TheArray[8 - k,j];
 					}
 				}
 			}
 
-
-			
-
-
-/*
-			SudokuGenome CrossingGene = (SudokuGenome)g;
-			for (int i = 0; i < CrossoverPoint; i++)
-			{
-				for (int j = 0; j < CrossoverPoint; j++)
-				{
-					aGene1.TheArray[i,j] = CrossingGene.TheArray[i,j];
-					aGene2.TheArray[i,j] = TheArray[i, j];
-				}
-			}
-
-			for (int i = CrossoverPoint; i < 9; i++)
-				for (int j = CrossoverPoint; j < 9; j++)
-				{
-					aGene1.TheArray[i,j] =  TheArray[i,j];
-					aGene2.TheArray[i,j] = CrossingGene.TheArray[i,j];
-				}
-
-			for (int i = CrossoverPoint; i < 9; i++)
-				for (int j = 0; j < CrossoverPoint; j++)
-				{
-					aGene1.TheArray[i,j] =  TheArray[i,j];
-					aGene2.TheArray[i,j] = CrossingGene.TheArray[i,j];
-				}
-
-			for (int i = 0; i < CrossoverPoint; i++)
-				for (int j = CrossoverPoint; j < 9; j++)
-				{
-					aGene1.TheArray[i,j] =  CrossingGene.TheArray[i,j];
-					aGene2.TheArray[i,j] = TheArray[i,j];
-				}
-*/				
-
-			// 50/50 chance of returning gene1 or gene2
 			SudokuGenome aGene = null;
 			if (TheSeed.Next(2) == 1)			
 			{

@@ -11,15 +11,15 @@ namespace Sudoku
 
 		protected const int kLength = 9;
 		protected const int kCrossover = kLength/2;
-		protected const int kInitialPopulation = 1000;
+		protected const int kInitialPopulation = 100;
 		protected const int kPopulationLimit = 50;
 		protected const int kMin = 1;
-		protected const int kMax = 1000;
+		protected const int kMax = 100;
 		protected const float  kMutationFrequency = 0.33f;
 		protected const float  kDeathFitness = -1.00f;
-		protected const float  kReproductionFitness = 0.0f;
+        protected const float kReproductionFitness = 0.0f;
 
-		protected ArrayList Genomes = new ArrayList();
+        protected ArrayList Genomes = new ArrayList();
 		protected ArrayList GenomeReproducers  = new ArrayList();
 		protected ArrayList GenomeResults = new ArrayList();
 		protected ArrayList GenomeFamily = new ArrayList();
@@ -45,8 +45,8 @@ namespace Sudoku
 
 		private void Mutate(Genome aGene)
 		{
-			if (SudokuGenome.TheSeed.Next(100) < (int)(kMutationFrequency * 100.0))
-			{
+			if ( SudokuGenome.TheSeed.Next(100)< (kMutationFrequency * 100.0))
+            {
 			  	aGene.Mutate();
 			}
 		}
@@ -97,10 +97,10 @@ namespace Sudoku
 			}
 
 
-//			Genomes.Sort();
+            Genomes.Sort();
 
-			// kill all the genes above the population limit
-			if (Genomes.Count > kPopulationLimit)
+            // kill all the genes above the population limit
+            if (Genomes.Count > kPopulationLimit)
 				Genomes.RemoveRange(kPopulationLimit, Genomes.Count - kPopulationLimit);
 			
 			CurrentPopulation = Genomes.Count;

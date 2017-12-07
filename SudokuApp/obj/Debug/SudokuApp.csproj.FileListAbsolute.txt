@@ -1,0 +1,7 @@
+C:\Users\Radeeb. J.B\Desktop\SudokuTest\SudokuApp\SudokuApp\bin\Debug\SudokuApp.exe.config
+C:\Users\Radeeb. J.B\Desktop\SudokuTest\SudokuApp\SudokuApp\bin\Debug\SudokuApp.exe
+C:\Users\Radeeb. J.B\Desktop\SudokuTest\SudokuApp\SudokuApp\bin\Debug\SudokuApp.pdb
+C:\Users\Radeeb. J.B\Desktop\SudokuTest\SudokuApp\SudokuApp\obj\Debug\SudokuApp.csproj.CoreCompileInputs.cache
+C:\Users\Radeeb. J.B\Desktop\SudokuTest\SudokuApp\SudokuApp\obj\Debug\SudokuApp.exe
+C:\Users\Radeeb. J.B\Desktop\SudokuTest\SudokuApp\SudokuApp\obj\Debug\SudokuApp.pdb
+C:\Users\Radeeb. J.B\Desktop\SudokuTest\SudokuApp\SudokuApp\obj\Debug\SudokuApp.csprojResolveAssemblyReference.cache
