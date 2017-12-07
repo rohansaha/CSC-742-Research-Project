@@ -3,10 +3,8 @@ using System.Collections;
 
 namespace Sudoku
 {
-	/// <summary>
-	/// Summary description for SudokuGenome.
-	/// </summary>
-	public class SudokuGenome : Genome
+
+	public class SudokuChromosome : Chromosome
 	{
 		protected int[,] TheArray = new int[9,9];
 		public static Random TheSeed = new Random((int)DateTime.Now.Ticks);
@@ -23,8 +21,8 @@ namespace Sudoku
 
 		public override int CompareTo(object a)
 		{
-			SudokuGenome Gene1 = this;
-			SudokuGenome Gene2 = (SudokuGenome)a;
+			SudokuChromosome Gene1 = this;
+			SudokuChromosome Gene2 = (SudokuChromosome)a;
 			return Math.Sign(Gene2.CurrentFitness  -  Gene1.CurrentFitness);
 		}
 
@@ -34,13 +32,13 @@ namespace Sudoku
 			CrossoverPoint = 	crossoverPoint;
 		}
 
-		public SudokuGenome()
+		public SudokuChromosome()
 		{
 
 		}
 
 
-		public SudokuGenome(long length, object min, object max)
+		public SudokuChromosome(long length, object min, object max)
 		{
 			//
 			// TODO: Add constructor logic here
@@ -245,24 +243,24 @@ namespace Sudoku
 
 
 
-		public override void CopyGeneInfo(Genome dest)
+		public override void CopyGeneInfo(Chromosome dest)
 		{
-			SudokuGenome theGene = (SudokuGenome)dest;
+			SudokuChromosome theGene = (SudokuChromosome)dest;
 			theGene.Length = Length;
 			theGene.TheMin = TheMin;
 			theGene.TheMax = TheMax;
 		}
 
 
-		public override Genome Crossover(Genome g)
+		public override Chromosome Crossover(Chromosome g)
 		{
-			SudokuGenome aGene1 = new SudokuGenome();
-			SudokuGenome aGene2 = new SudokuGenome();
+			SudokuChromosome aGene1 = new SudokuChromosome();
+			SudokuChromosome aGene2 = new SudokuChromosome();
 			g.CopyGeneInfo(aGene1);
 			g.CopyGeneInfo(aGene2);
 
 
-			SudokuGenome CrossingGene = (SudokuGenome)g;
+			SudokuChromosome CrossingGene = (SudokuChromosome)g;
 			if (TheSeed.Next(2) == 1)
 			{
 				for (int j = 0; j < 9; j++)
@@ -300,7 +298,7 @@ namespace Sudoku
 				}
 			}
 
-			SudokuGenome aGene = null;
+			SudokuChromosome aGene = null;
 			if (TheSeed.Next(2) == 1)			
 			{
 				aGene = aGene1;

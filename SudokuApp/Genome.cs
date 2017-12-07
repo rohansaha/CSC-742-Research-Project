@@ -6,7 +6,7 @@ namespace Sudoku
 	/// <summary>
 	/// Summary description for Genome.
 	/// </summary>
-	public abstract class Genome : IComparable
+	public abstract class Chromosome : IComparable
 	{
 		public long Length;
 		public int  CrossoverPoint;
@@ -15,14 +15,14 @@ namespace Sudoku
 
 		abstract public void Initialize();
 		abstract public void Mutate();
-		abstract public Genome Crossover(Genome g);
+		abstract public Chromosome Crossover(Chromosome g);
 		abstract public object GenerateGeneValue(object min, object max);
 		abstract public void SetCrossoverPoint(int crossoverPoint);
 		abstract public float CalculateFitness();
 		abstract public bool  CanReproduce(float fitness);
 		abstract public bool  CanDie(float fitness);
 		abstract public string ToString();
-		abstract public void	CopyGeneInfo(Genome g);
+		abstract public void	CopyGeneInfo(Chromosome g);
 
 		
 		abstract public int CompareTo(object a);

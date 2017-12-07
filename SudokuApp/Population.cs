@@ -3,49 +3,45 @@ using System.Collections;
 
 namespace Sudoku
 {
-	/// <summary>
-	/// Summary description for Population.
-	/// </summary>
+
 	public class Population
 	{
 
-		protected const int kLength = 9;
-		protected const int kCrossover = kLength/2;
-		protected const int kInitialPopulation = 100;
-		protected const int kPopulationLimit = 50;
+		protected const int sudoLength = 9;
+		protected const int crossOverAt = sudoLength/2;
+		protected const int initPopulation = 100;
+		protected const int PopulationLimit = 50;
 		protected const int kMin = 1;
 		protected const int kMax = 100;
-		protected const float  kMutationFrequency = 0.33f;
+		protected const float  mutationRate = 0.33f;
 		protected const float  kDeathFitness = -1.00f;
         protected const float kReproductionFitness = 0.0f;
 
-        protected ArrayList Genomes = new ArrayList();
+        protected ArrayList Genomes = new ArrayList();//create new genome
 		protected ArrayList GenomeReproducers  = new ArrayList();
 		protected ArrayList GenomeResults = new ArrayList();
 		protected ArrayList GenomeFamily = new ArrayList();
 
-		protected int		  CurrentPopulation = kInitialPopulation;
+		protected int		  CurrentPopulation = initPopulation;
 		protected int		  Generation = 1;
-		protected bool	  Best2 = true;
+		protected bool	  select2 = true; //to select the best two
 
 		public Population()
 		{
-			//
-			// TODO: Add constructor logic here
-			//
-			for  (int i = 0; i < kInitialPopulation; i++)
+			
+			for  (int i = 0; i < initPopulation; i++)
 			{
-				SudokuGenome aGenome = new SudokuGenome(kLength, kMin, kMax);
-				aGenome.SetCrossoverPoint(kCrossover);
-				aGenome.CalculateFitness();
-				Genomes.Add(aGenome);
+				SudokuChromosome chromosome = new SudokuChromosome(sudoLength, kMin, kMax);
+				chromosome.SetCrossoverPoint(crossOverAt);
+				chromosome.CalculateFitness();
+				Genomes.Add(chromosome);
 			}
 
 		}
 
-		private void Mutate(Genome aGene)
+		private void Mutate(Chromosome aGene)
 		{
-			if ( SudokuGenome.TheSeed.Next(100)< (kMutationFrequency * 100.0))
+			if ( SudokuChromosome.TheSeed.Next(100)< (mutationRate * 100.0))
             {
 			  	aGene.Mutate();
 			}
@@ -53,14 +49,14 @@ namespace Sudoku
 
 		public void NextGeneration()
 		{
-			// increment the generation;
+			// add generation counter;
 			Generation++; 
 
 
-			// check who can die
+			//
 			for  (int i = 0; i < Genomes.Count; i++)
 			{
-				if  (((Genome)Genomes[i]).CanDie(kDeathFitness))
+				if  (((Chromosome)Genomes[i]).CanDie(kDeathFitness))
 				{
 					Genomes.RemoveAt(i);
 					i--;
@@ -68,40 +64,41 @@ namespace Sudoku
 			}
 
 
-			// determine who can reproduce
+			// check who can reproduce
 			GenomeReproducers.Clear();
 			GenomeResults.Clear();
+
 			for  (int i = 0; i < Genomes.Count; i++)
 			{
-				if (((Genome)Genomes[i]).CanReproduce(kReproductionFitness))
+				if (((Chromosome)Genomes[i]).CanReproduce(kReproductionFitness))
 				{
 					GenomeReproducers.Add(Genomes[i]);			
 				}
 			}
 			
-			// do the crossover of the genes and add them to the population
+			// crossover genes and add them to the population
 			 DoCrossover(GenomeReproducers);
 
 			Genomes = (ArrayList)GenomeResults.Clone();
 
-			// mutate a few genes in the new population
+			// mutate few genes in the new population
 			for  (int i = 0; i < Genomes.Count; i++)
 			{
-				Mutate((Genome)Genomes[i]);
+				Mutate((Chromosome)Genomes[i]);
 			}
 
 			// calculate fitness of all the genes
 			for  (int i = 0; i < Genomes.Count; i++)
 			{
-				((Genome)Genomes[i]).CalculateFitness();
+				((Chromosome)Genomes[i]).CalculateFitness();
 			}
 
 
-            Genomes.Sort();
+            Genomes.Sort(); 
 
-            // kill all the genes above the population limit
-            if (Genomes.Count > kPopulationLimit)
-				Genomes.RemoveRange(kPopulationLimit, Genomes.Count - kPopulationLimit);
+            // kill genes above the population limit
+            if (Genomes.Count > PopulationLimit)
+				Genomes.RemoveRange(PopulationLimit, Genomes.Count - PopulationLimit);
 			
 			CurrentPopulation = Genomes.Count;
 			
@@ -109,7 +106,7 @@ namespace Sudoku
 
 		public  void CalculateFitnessForAll(ArrayList genes)
 		{
-			foreach(SudokuGenome lg in genes)
+			foreach(SudokuChromosome lg in genes)
 			{
 			  lg.CalculateFitness();
 			}
@@ -122,8 +119,8 @@ namespace Sudoku
 
 			for (int i = 0; i < genes.Count; i++)
 			{
-				// randomly pick the moms and dad's
-				if (SudokuGenome.TheSeed.Next(100) % 2 > 0)
+				// randomly pick the parents
+				if (SudokuChromosome.TheSeed.Next(100) % 2 > 0)
 				{
 					GeneMoms.Add(genes[i]);
 				}
@@ -133,7 +130,7 @@ namespace Sudoku
 				}
 			}
 
-			//  now make them equal
+            //to balance the number of different parents
 			if (GeneMoms.Count > GeneDads.Count)
 			{
 				while (GeneMoms.Count > GeneDads.Count)
@@ -162,12 +159,12 @@ namespace Sudoku
 				}
 			}
 
-			// now cross them over and add them according to fitness
+			// cross them over and add them according to fitness
 			for (int i = 0; i < GeneDads.Count; i ++)
 			{
-				// pick best 2 from parent and children
-				SudokuGenome babyGene1 = (SudokuGenome)((SudokuGenome)GeneDads[i]).Crossover((SudokuGenome)GeneMoms[i]);
-			    SudokuGenome babyGene2 = (SudokuGenome)((SudokuGenome)GeneMoms[i]).Crossover((SudokuGenome)GeneDads[i]);
+				// select the best two from parent and children
+				SudokuChromosome babyGene1 = (SudokuChromosome)((SudokuChromosome)GeneDads[i]).Crossover((SudokuChromosome)GeneMoms[i]);
+			    SudokuChromosome babyGene2 = (SudokuChromosome)((SudokuChromosome)GeneMoms[i]).Crossover((SudokuChromosome)GeneDads[i]);
 			
 				GenomeFamily.Clear();
 				GenomeFamily.Add(GeneDads[i]);
@@ -177,9 +174,9 @@ namespace Sudoku
 				CalculateFitnessForAll(GenomeFamily);
 				GenomeFamily.Sort();
 
-				if (Best2 == true)
+				if (select2 == true)
 				{
-					// if Best2 is true, add top fitness genes
+					// if select2 is true, add top fitness genes
 					GenomeResults.Add(GenomeFamily[0]);					
 					GenomeResults.Add(GenomeFamily[1]);					
 
@@ -193,22 +190,22 @@ namespace Sudoku
 
 		}
 
-		public Genome GetHighestScoreGenome()
+		public Chromosome GetHighestScoreGenome()
 		{
 			Genomes.Sort();
-			return (Genome)Genomes[0];
+			return (Chromosome)Genomes[0];
 		}
 
 		public virtual void WriteNextGeneration()
 		{
-			// just write the top 20
+			// write the top 20
 			Console.WriteLine("Generation {0}\n", Generation);
-			if (Generation % 1  == 0) // just print every 100 generations
+			if (Generation % 1  == 0) 
 			{
 				Genomes.Sort();
 				for  (int i = 0; i <  CurrentPopulation ; i++)
 				{
-					Console.WriteLine(((Genome)Genomes[i]).ToString());
+					Console.WriteLine(((Chromosome)Genomes[i]).ToString());
 				}
 
 				Console.WriteLine("Hit the enter key to continue...\n");

@@ -27,7 +27,7 @@ namespace SudokuApp
             return (int)(val * 100);
         }
 
-        static Genome _gene = null;
+        static Chromosome _gene = null;
         public static void CalculateGeneration(int nPopulation, int nGeneration)
         {
             int _previousFitness = 0;
@@ -38,7 +38,7 @@ namespace SudokuApp
                 if (_threadFlag)
                     break;
                 TestPopulation.NextGeneration();
-                Genome g = TestPopulation.GetHighestScoreGenome();
+                Chromosome g = TestPopulation.GetHighestScoreGenome();
 
                 if (i % 100 == 0)
                 {
