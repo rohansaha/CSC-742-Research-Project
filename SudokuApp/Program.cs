@@ -8,65 +8,48 @@ using Sudoku;
 
 namespace SudokuApp
 {
-    class Program
+  class Program
+  {
+    static void Main(string[] args)
     {
-        static bool _threadFlag = false;
-        static void Main(string[] args)
-        {
-            Thread _oThread = new Thread(new ThreadStart(GenomeThread));
-            _oThread.Start();
-        }
-        static void GenomeThread()
-        {
-            CalculateGeneration(100, 10000);
-           
-        }
-
-        static int ToPercent(float val)
-        {
-            return (int)(val * 100);
-        }
-
-        static Chromosome _gene = null;
-        public static void CalculateGeneration(int nPopulation, int nGeneration)
-        {
-            int _previousFitness = 0;
-            Population TestPopulation = new Population();
-            //			TestPopulation.WriteNextGeneration();
-            for (int i = 0; i < nGeneration; i++)
-            {
-                if (_threadFlag)
-                    break;
-                TestPopulation.NextGeneration();
-                Chromosome g = TestPopulation.GetHighestScoreGenome();
-
-                if (i % 100 == 0)
-                {
-                    Console.WriteLine("Generation #{0}", i);
-                    if (ToPercent(g.CurrentFitness) != _previousFitness)
-                    {
-                        Console.WriteLine(g.ToString());
-                        _gene = g;
-                        ////CheckForIllegalCrossThreadCalls = false; statusBar1.Text = String.Format("Current Fitness = {0}", g.CurrentFitness.ToString("0.00"));
-                        //this.Text = String.Format("Sudoko Grid - Generation {0}", i);
-                        //Invalidate();
-                        _previousFitness = ToPercent(g.CurrentFitness);
-                    }
-
-                    if (g.CurrentFitness > .9999)
-                    {
-                        Console.WriteLine("Final Solution at Generation {0}", i);
-                        //statusBar1.Text = "Finished";
-                        Console.WriteLine(g.ToString());
-                        Console.ReadLine();
-                        break;
-                    }
-                }
-
-                //				TestPopulation.WriteNextGeneration();
-            }
-
-
-        }
+      ComputeGeneticAlgorithm(100, 10000);
     }
+
+    public static void ComputeGeneticAlgorithm(int nPopulation, int nGeneration)
+    {
+      bool isOptimal = false;
+      float previousFitness = 0;
+      Soduku popoulation = new Soduku();
+      SudokuGA optimalSudoku = new SudokuGA(9,1,100);
+      for (int i = 0; i < nGeneration; i++)
+      {
+        popoulation.NextGeneration();
+        SudokuGA chromosome = popoulation.GetFittest();
+        if (i % 100 == 0)
+        {
+          Console.WriteLine("Generation #{0}", i);
+          if (chromosome.CurrentFitness != previousFitness)
+          {
+            previousFitness = chromosome.CurrentFitness;
+            Console.WriteLine(chromosome.ToString());
+          }
+
+          if (chromosome.CurrentFitness >= 1)
+          {
+            isOptimal = true;
+            Console.WriteLine("Final Solution at Generation {0}", i);
+            Console.WriteLine(chromosome.ToString());
+            break;
+          }
+        }
+        optimalSudoku = chromosome;
+      }
+      if (!isOptimal)
+      {
+        Console.WriteLine("Max Optimal Solution reached");
+        Console.WriteLine(optimalSudoku.ToString());
+      }
+      Console.ReadLine();
+    }
+  }
 }
